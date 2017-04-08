@@ -1,0 +1,40 @@
+{
+  "name": "x10-mr26",
+  "version": "0.0.0",
+  "description": "A node module for the MR26 family of X10 RF receivers.",
+  "main": "lib/mr26.js",
+  "bin": "./bin/mr26",
+  "directories": {
+    "doc": "docs",
+    "test": "tests"
+  },
+  "dependencies": {
+    "lodash": "^4.17.4",
+    "serialport": "^4.0.7",
+    "x10": "^1.1.0"
+  },
+  "devDependencies": {
+    "mocha": "^3.2.0",
+    "should": "^11.2.1"
+  },
+  "scripts": {
+    "test": "mocha --reporter spec tests/test-*.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/keithws/x10-mr26.git"
+  },
+  "keywords": [
+    "x10",
+    "rf",
+    "mr26",
+    "mr26a",
+    "FireCracker Receiver"
+  ],
+  "author": "Keith W. Shaw",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/keithws/x10-mr26/issues"
+  },
+  "homepage": "https://github.com/keithws/x10-mr26#readme"
+}
