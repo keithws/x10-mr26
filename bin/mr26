@@ -1,1 +1,26 @@
 #!/usr/bin/env node
+
+const MR26 = require("..");
+
+let port = process.argv[2];
+
+if (!port) {
+    console.error(`usage: mr26 [port]`);
+    process.exit(2);
+}
+
+let mr26 = new MR26(port);
+
+// errors will be emitted as an error event
+mr26.on("error", function (err) {
+  console.error("! ", err.message);
+});
+
+mr26.on("data", function (data) {
+    //console.log("> mr26 data received");
+    console.log(data);
+});
+
+mr26.listen(function () {
+    console.log("> mr26 listening");
+});

@@ -24,5 +24,4 @@ x10-mr26 is available under the [MIT License][1].
 
 
   [1]: https://github.com/keithws/x10/blob/master/LICENSE
-  [2]: http://www.wgldesigns.com/mr26.html
   [3]: https://www.x10.com/

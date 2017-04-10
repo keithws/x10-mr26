@@ -1,0 +1,60 @@
+# note the PalmPad (HR12A) repeats the message (at least) six times
+# the thin wall switch may send only one message
+# both continue to repeat the message as long as the button is pressed
+
+
+# i pressed L08OFF and received this:
+> data received
+{"type":"Buffer","data":[213,170,208,120]}
+> data received
+{"type":"Buffer","data":[173]}
+> data received
+{"type":"Buffer","data":[213,170]}
+> data received
+{"type":"Buffer","data":[208,120,173]}
+> data received
+{"type":"Buffer","data":[213]}
+> data received
+{"type":"Buffer","data":[170,208,120,173]}
+> data received
+{"type":"Buffer","data":[213,170,208,120,173]}
+> data received
+{"type":"Buffer","data":[213,170,208,120,173]}
+> data received
+{"type":"Buffer","data":[213,170,208,120,173]}
+
+# normalize it to this:
+
+[213,170,208,120,173]
+[213,170,208,120,173]
+[213,170,208,120,173]
+[213,170,208,120,173]
+[213,170,208,120,173]
+[213,170,208,120,173]
+
+# the same code repeated six times
+
+# now convert to hex
+[213,170,208,120,173]
+d5,aa,d0,78,ad
+
+
+# i press L08OFF: d5,aa,d0,78,ad
+# i press L08ON:  d5,aa,d0,58,ad
+# i press DIM:    d5,aa,d0,98,ad
+# i press BRIGHT: d5,aa,d0,88,ad
+
+# i press L01OFF: d5,aa,d0,20,ad
+# i press L01ON:  d5,aa,d0,00,ad
+
+# i press L16OFF: d5,aa,d4,78,ad
+# i press L16ON:  d5,aa,d4,58,ad
+
+# i press K09OFF: d5,aa,c4,20,ad
+# i press K09ON:  d5,aa,c4,00,ad
+# i press DIM:    d5,aa,c4,98,ad
+# i press BRIGHT: d5,aa,c4,88,ad
+
+# i press A01OFF: d5 aa 60 20 ad
+# i press A01ON:  d5 aa 60 00 ad
+
