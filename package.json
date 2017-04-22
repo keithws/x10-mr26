@@ -1,6 +1,6 @@
 {
   "name": "x10-mr26",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "A node module for the MR26 RF Serial FireCracker Receiver from X10.",
   "main": "lib/mr26.js",
   "bin": "./bin/mr26",
