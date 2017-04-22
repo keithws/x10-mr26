@@ -3,88 +3,63 @@
 const should = require("should");
 const MR26 = require("..");
 const SerialPort = require("./MockSerialPort").SerialPort;
-const X10 = require("x10");
-const X10Address = X10.Address;
-const X10Command = X10.Command;
+
+let serialPort = new SerialPort("/path/to/fake/port");
+let mr26 = new MR26(serialPort);
 
 describe("MR26", function () {
-    var serialPort, receiver;
 
-    serialPort = new SerialPort("/path/to/fake/usb");
-    receiver = new MR26(serialPort, function (err) {
-        "test error".should.equal(err);
-    });
-    serialPort.emit("error", "test error");
-    serialPort = new SerialPort("/path/to/fake/usb");
-    receiver = new MR26(serialPort, function (err) {
-        (typeof err).should.equal("undefined");
-    });
-
-    it("responds to a handshake request.", function (done) {
-        serialPort = new SerialPort("/path/to/fake/usb");
-        receiver = new MR26(serialPort, function (err) {
-            should.not.exist(err);
-            receiver.isReady.should.equal(true);
-            done();
-        });
-        // echo back a 0x29 indicating the W800 is on line.
-        serialPort.emit("open");
-        serialPort.emit("data", [0x29]);
+    before(function () {
+        mr26.listen();
     });
 
     it("decodes the sampled RF stream into a stream of X10 packets", function (done) {
-        serialPort = new SerialPort("/path/to/fake/usb");
-        receiver = new MR26(serialPort, function () {
-            receiver.isReady.should.equal(true);
-            receiver.on("data", function (data, rawData) {
-                should.exist(data);
-                rawData.should.deepEqual(new Buffer([0b00011110, 0b11100001, 0b00100110, 0b11011001]));
-                data.should.deepEqual([new X10Address("A16"), new X10Command("OFF")]);
-                done();
-            });
+        mr26.once("data", function (data) {
+            should.exist(data);
+            data.should.equal("L16off");
+            done();
         });
-        // send 0x29 to indicate the W800 is online
+        // open the serial port
         serialPort.emit("open");
-        serialPort.emit("data", new Buffer([0x29]));
         // send A-16 OFF from the fake serial port
-        serialPort.emit("data", new Buffer([0b01100100, 0b10011011, 0b01111000, 0b10000111]));
+        serialPort.emit("data", new Buffer([
+            0xd5, 0xaa, 0xd4, 0x78, 0xad
+        ]));
     });
 
-    it("decodes one to six repeated samples as just one X10 packet", function (done) {
-        serialPort = new SerialPort("/path/to/fake/usb");
-        receiver = new MR26(serialPort, function () {
-            receiver.isReady.should.equal(true);
-            receiver.on("data", function (data, rawData) {
-                should.exist(data);
-                rawData.should.deepEqual(new Buffer([0b00000100, 0b11111011, 0b00000110, 0b11111001]));
-                data.should.deepEqual([new X10Address("A1"), new X10Command("OFF")]);
-                done();
-            });
+    it("decodes up to six repeated samples as just one", function (done) {
+
+        mr26.once("data", function (data) {
+            should.exist(data);
+            data.should.equal("A1off");
+            done();
         });
-        // send 0x29 to indicate the W800 is online
+
+        // TODO update test to ensure only one data event is emitted in 645ms
+
         serialPort.emit("open");
-        serialPort.emit("data", new Buffer([0x29]));
-        // send A-1 OFF from the fake serial port
-        // the message is repeated six times (over 576ms) when I press a remote button
-        serialPort.emit("data", new Buffer([0b01100000, 0b10011111, 0b00100000, 0b11011111]));
+        // send A1 OFF from the fake serial port
+        // the message is repeated six times (over 645ms)
+        // to simulate pressing a button on the palmpad HR12A
+        serialPort.emit("data", new Buffer([0xd5, 0xaa, 0x60, 0x20, 0xad]));
         setTimeout(function () {
-            serialPort.emit("data", new Buffer([0b01100000, 0b10011111, 0b00100000, 0b11011111]));
+            serialPort.emit("data", new Buffer([0xd5, 0xaa, 0x60, 0x20, 0xad]));
             setTimeout(function () {
-                serialPort.emit("data", new Buffer([0b01100000, 0b10011111, 0b00100000, 0b11011111]));
+                serialPort.emit("data", new Buffer([0xd5, 0xaa, 0x60, 0x20, 0xad]));
                 setTimeout(function () {
-                    serialPort.emit("data", new Buffer([0b01100000, 0b10011111, 0b00100000, 0b11011111]));
+                    serialPort.emit("data", new Buffer([0xd5, 0xaa, 0x60, 0x20, 0xad]));
                     setTimeout(function () {
-                        serialPort.emit("data", new Buffer([0b01100000, 0b10011111, 0b00100000, 0b11011111]));
+                        serialPort.emit("data", new Buffer([0xd5, 0xaa, 0x60, 0x20, 0xad]));
                         setTimeout(function () {
-                            serialPort.emit("data", new Buffer([0b01100000, 0b10011111, 0b00100000, 0b11011111]));
-                        }, 96);
-                    }, 96);
-                }, 96);
-            }, 96);
-        }, 96);
+                            serialPort.emit("data", new Buffer([0xd5, 0xaa, 0x60, 0x20, 0xad]));
+                        }, 107.5);
+                    }, 107.5);
+                }, 107.5);
+            }, 107.5);
+        }, 107.5);
     });
 
     // add more tests to ensure the data is decoded correctly
-    // based on samples from docs/w800rf32_protocol.txt
+    // based on samples in docs folder
 
 });
