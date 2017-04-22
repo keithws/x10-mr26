@@ -50,13 +50,16 @@ x10-mr26 is available under the [MIT License][1].
 
 ## Todo
 
-* create tests
 * ensure the output stream is compatible with the TI103 ASCII Controller
 * sample more devices
     * like a keychain fob and a motion sensor
 * consider requiring two valid transmissions to combat noise
 
 ## Change Log
+
+*1.0.2 — April 22, 2017*
+
+* added two basic test cases
 
 *1.0.1 — April 22, 2017*
 
