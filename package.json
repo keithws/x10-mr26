@@ -17,7 +17,7 @@
     "should": "^11.2.1"
   },
   "scripts": {
-    "test": "mocha --reporter spec tests/test-*.js"
+    "test": "eslint bin/mr26 \"**/*.js\" && mocha --reporter spec tests/test-*.js"
   },
   "repository": {
     "type": "git",
