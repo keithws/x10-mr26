@@ -13,7 +13,8 @@ let mr26 = new MR26(port);
 
 // errors will be emitted as an error event
 mr26.on("error", function (err) {
-  console.error("! ", err.message);
+    console.error(err.message);
+    process.exit(err.code || 1);
 });
 
 mr26.on("data", function (data) {
@@ -22,5 +23,5 @@ mr26.on("data", function (data) {
 });
 
 mr26.listen(function () {
-    console.log("> mr26 listening");
+    //console.log("> mr26 listening");
 });
